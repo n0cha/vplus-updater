@@ -71,7 +71,6 @@ console.log('=== Valheim Plus Updater ===');
 				
 				if (defaultValue === customValue) return;
 
-				// newConfig[sectionKey][key] = oldConfig[sectionKey][key];
 				copied.push([ sectionKey, key, customValue ]);
 				
 				const sectionIndex = configContent.indexOf('[' + sectionKey + ']');
