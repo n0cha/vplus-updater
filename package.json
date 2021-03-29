@@ -1,0 +1,17 @@
+{
+  "name": "vplus-updater",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "ini": "^2.0.0",
+    "node-fetch": "^2.6.1",
+    "unzipper": "^0.10.11"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
