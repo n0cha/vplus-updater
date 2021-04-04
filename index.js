@@ -18,6 +18,12 @@ const end = (msg, errorLevel = 0) => {
 	process.exit(errorLevel);
 };
 
+const listItems = (items, msg) => {
+	if (!items.length) return;
+	console.log(msg);
+	items.forEach(item => console.log(`  [${item[0]}] ${item[1]} = ${item[2]}`));
+}
+
 const currentVersion = config.version;
 const serverRoot = path.resolve(__dirname, config.serverRoot);
 
@@ -53,6 +59,14 @@ console.log('=== Valheim Plus Updater ===');
 		
 		console.log(`Updated ${currentVersion && `version ${currentVersion} ` || ''}to version ${version}`);
 		
+		if (oldConfig?.Server?.disableServerPassword) {
+			const startScript = path.resolve(serverRoot, START_SCRIPT);
+			let startScriptContent = fs.readFileSync(startScript).toString('utf-8');
+			startScriptContent = startScriptContent.replace(' -password "${server_password}"', '');
+			fs.writeFileSync(startScript, startScriptContent);
+			console.log('Removed password argument from start script');
+		}
+		
 		const newConfigContent = fs.readFileSync(vplusConfigFile, 'utf-8');
 		const newConfig = ini.parse(newConfigContent);
 		
@@ -83,32 +97,18 @@ console.log('=== Valheim Plus Updater ===');
 			});
 		});
 		
+		fs.writeFileSync(vplusConfigFile, configContent);
+		console.log('Merged config files');
+		
 		Object.keys(newConfig).forEach(sectionKey => {
 			Object.keys(newConfig[sectionKey]).forEach(key => {
 				if (!oldConfig[sectionKey] || !(key in newConfig[sectionKey])) return added.push([ sectionKey, key, newConfig[sectionKey][key] ]);
 			});
 		});
 		
-		if (oldConfig.Server.disableServerPassword) {
-			const startScript = path.resolve(serverRoot, START_SCRIPT);
-			let startScriptContent = fs.readFileSync(startScript).toString('utf-8');
-			startScriptContent = startScriptContent.replace(' -password "${server_password}"', '');
-			fs.writeFileSync(startScript, startScriptContent);
-			console.log('Removed password argument from start script');
-		}
-		
-		if (copied.length) {
-			console.log('Settings restored:');
-			copied.forEach(item => console.log(`  [${item[0]}] ${item[1]} = ${item[2]}`));
-		}
-		if (removed.length) {
-			console.log('Settings no longer used in this version:');
-			removed.forEach(item => console.log(`  [${item[0]}] ${item[1]} = ${item[2]}`));
-		}
-		if (removed.length) {
-			console.log('New settings in this version:');
-			removed.forEach(item => console.log(`  [${item[0]}] ${item[1]} = ${item[2]}`));
-		}
+		listItems(copied, 'Settings restored:');
+		listItems(removed, 'Settings no longer used in this version:');
+		listItems(added, 'New settings in this version:');
 		
 		config.version = version;
 		await fs.writeFileSync(path.join(__dirname, UPDATER_CONFIG_FILE), JSON.stringify(config, undefined, 2));
