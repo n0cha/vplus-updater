@@ -81,7 +81,7 @@ console.log('=== Valheim Plus Updater ===');
 
 (async () => {
 	try {
-		const archivePath = getLatestArchivePath();
+		const archivePath = await getLatestArchivePath();
 		
 		const [ version ] = archivePath.match(/\d+\.\d+\.\d+/);
 		
