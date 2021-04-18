@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const unzipper = require('unzipper');
 const ini = require('ini');
 
-const UPDATER_CONFIG_FILE = 'updater.json';
+const UPDATER_CONFIG_FILE = 'config.json';
 const GITHUB_ROOT = 'https://github.com';
 const LATEST_PATH = '/valheimPlus/ValheimPlus/releases/latest/';
 const VPLUS_CONFIG_FILE_PATH = 'BepInEx/config/valheim_plus.cfg';
